@@ -50,7 +50,7 @@
       <b>ติดตั้งลงหน้าจอโฮม</b>
       <ol>
         <li><b>iPhone / iPad:</b> Safari › ปุ่ม <b>แชร์</b> › <b>เพิ่มไปยังหน้าจอโฮม</b></li>
-        <li><b>คอมพิวเตอร์ (Chrome):</b> กดไอคอน <b>ติดตั้ง</b> ⊕ ท้ายช่องที่อยู่</li>
+        <li><b>คอมพิวเตอร์ (Chrome):</b> เมนู <b>⋮</b> มุมขวาบน › <b>แคสต์ บันทึก และแชร์</b> › <b>ติดตั้งหน้านี้เป็นแอป</b> (หรือกดไอคอน ⊕ ท้ายช่องที่อยู่ ถ้ามี)</li>
         <li>เปิดแอปจากไอคอนใหม่ แล้ววางลิงก์ web app ครั้งแรก</li>
       </ol>
     </div>
@@ -103,6 +103,8 @@
   }
 
   function openHere() { const u = load(); u ? go(u) : showSetup(); }
+
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 
   const saved = load();
   if (standalone) { saved ? go(saved) : showSetup(); }
