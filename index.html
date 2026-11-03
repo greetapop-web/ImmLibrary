@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ImmLibrary</title>
+<!--
+  หน้าเปิดแอป (launcher) ของ ImmLibrary · The Enchanted Digital Library
+  มีไว้เพื่อให้ไอคอนบนหน้าจอโฮมสวยงาม แล้วพาไปที่ web app จริงบน script.google.com
+  ลิงก์ web app ไม่ได้อยู่ในไฟล์นี้ — กรอกครั้งแรกในแอป แล้วเก็บไว้ในเครื่องนั้นเท่านั้น
+-->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ImmLibrary">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#1B100B">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+<link rel="manifest" href="manifest.json">
+<style>
+  :root { --bg:#1B100B; --card:#2A1B11; --ink:#F6EBD5; --muted:#BCA98A; --line:rgba(214,174,104,.45); --accent:#D6AE68; --danger:#F0A0A0; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body { background: radial-gradient(120% 70% at 50% -10%,#3b2717,var(--bg) 60%); background-color: var(--bg); color: var(--ink); font-family: -apple-system, 'Sukhumvit Set', 'Noto Sans Thai', sans-serif; font-size: 16px;
+         display: flex; align-items: center; justify-content: center; min-height: 100dvh; padding: 24px 16px; }
+  main { width: 100%; max-width: 440px; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
+  .logo { width: 104px; height: 104px; border-radius: 24px; filter: drop-shadow(0 0 22px rgba(232,190,120,.45)); }
+  h1 { margin: 0; font-size: 30px; color: #E8BE78; font-family: 'Cormorant Garamond', Georgia, serif; letter-spacing: .5px; }
+  .sub { font-size: 11px; letter-spacing: 3px; color: var(--muted); margin-top: -10px; }
+  p { margin: 0; color: var(--muted); line-height: 1.6; }
+  .card { width: 100%; background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 10px; text-align: left; }
+  label { font-size: 14px; color: var(--muted); }
+  input { width: 100%; min-height: 48px; padding: 0 12px; background: #1B100B; color: var(--ink); border: 1px solid var(--line); border-radius: 10px; font-size: 16px; font-family: ui-monospace, Menlo, monospace; }
+  button, .btn { min-height: 48px; padding: 0 20px; border: none; border-radius: 12px; background: linear-gradient(135deg,#FBE3AE,#E8BE78 35%,#D6AE68); color: #24150b; font-size: 16px; font-weight: 600; font-family: inherit; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+  .link { background: none; color: var(--accent); min-height: 44px; font-weight: 400; text-decoration: underline; }
+  .err { color: var(--danger); font-size: 14px; }
+  ol { margin: 0; padding-left: 22px; line-height: 1.9; text-align: left; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <img class="logo" src="icons/icon-192.png" alt="">
+  <h1>ImmLibrary</h1>
+  <div class="sub">THE ENCHANTED DIGITAL LIBRARY</div>
+
+  <!-- เปิดใน Safari ปกติ: สอนติดตั้ง -->
+  <section id="install" hidden>
+    <div class="card">
+      <b>ติดตั้งลงหน้าจอโฮม</b>
+      <ol>
+        <li><b>iPhone / iPad:</b> Safari › ปุ่ม <b>แชร์</b> › <b>เพิ่มไปยังหน้าจอโฮม</b></li>
+        <li><b>คอมพิวเตอร์ (Chrome):</b> กดไอคอน <b>ติดตั้ง</b> ⊕ ท้ายช่องที่อยู่</li>
+        <li>เปิดแอปจากไอคอนใหม่ แล้ววางลิงก์ web app ครั้งแรก</li>
+      </ol>
+    </div>
+    <button type="button" id="openNow" style="width:100%;margin-top:12px" onclick="openHere()">✦ เปิด ImmLibrary เลย</button>
+  </section>
+
+  <!-- กำลังพาไปที่ web app -->
+  <section id="going" hidden>
+    <p>✨ กำลังร่ายมนตร์เปิดห้องสมุด…</p>
+    <button class="link" type="button" onclick="showSetup(true)">เปลี่ยนลิงก์ web app</button>
+  </section>
+
+  <!-- ตั้งค่าครั้งแรก / เปลี่ยนลิงก์ -->
+  <section id="setup" class="card" hidden>
+    <label for="url">ลิงก์ web app ของ ImmLibrary (ลงท้ายด้วย <b>/exec</b>)</label>
+    <input id="url" type="url" inputmode="url" autocapitalize="off" autocorrect="off" spellcheck="false"
+           placeholder="https://script.google.com/macros/s/…/exec">
+    <div id="err" class="err" hidden></div>
+    <button type="button" onclick="save()">บันทึกและเปิด</button>
+    <p style="font-size:13px">ลิงก์เก็บไว้ในเครื่องนี้เท่านั้น ไม่ได้อยู่บน GitHub
+      — หาได้จาก Apps Script: การทำให้ใช้งานได้ › จัดการการทำให้ใช้งานได้ › URL ของเว็บแอป</p>
+  </section>
+</main>
+
+<script>
+  const KEY = 'immLibraryUrl';
+  const $ = (id) => document.getElementById(id);
+  const standalone = window.navigator.standalone === true || matchMedia('(display-mode: standalone)').matches;
+  let timer = null;
+
+  function load() { try { return localStorage.getItem(KEY) || ''; } catch (e) { return ''; } }
+  function store(v) { try { localStorage.setItem(KEY, v); return true; } catch (e) { return false; } }
+  function valid(u) { return /^https:\/\/script\.google\.com\/(a\/[^/]+\/)?macros\/(u\/\d+\/)?s\/[\w-]+\/(exec|dev)(\?.*)?$/.test(u); }
+
+  function showSetup(cancel) {
+    if (cancel && timer) clearTimeout(timer);
+    $('going').hidden = true; $('install').hidden = true; $('setup').hidden = false;
+    $('url').value = load(); $('url').focus();
+  }
+  function go(u) {
+    $('setup').hidden = true; $('going').hidden = false;
+    timer = setTimeout(() => location.replace(u), 900); // เว้นจังหวะให้กด "เปลี่ยนลิงก์" ได้
+  }
+  function save() {
+    const u = $('url').value.trim();
+    if (!valid(u)) { $('err').textContent = 'ลิงก์ไม่ถูกต้อง — ต้องขึ้นต้นด้วย https://script.google.com/macros/s/ และลงท้ายด้วย /exec'; $('err').hidden = false; return; }
+    $('err').hidden = true;
+    store(u);
+    go(u);
+  }
+
+  function openHere() { const u = load(); u ? go(u) : showSetup(); }
+
+  const saved = load();
+  if (standalone) { saved ? go(saved) : showSetup(); }
+  else { $('install').hidden = false; }
+</script>
+</body>
+</html>
